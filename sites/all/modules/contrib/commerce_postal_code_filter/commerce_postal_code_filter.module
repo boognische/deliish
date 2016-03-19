@@ -1,0 +1,263 @@
+<?php
+
+/**
+ * @file
+ * Main module file for Commerce postal code filter
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function commerce_postal_code_filter_menu() {
+
+  $items = array();
+
+  $items['admin/commerce/config/postal-code-filter'] = array(
+    'title' => 'Postal code filter',
+    'description' => 'Administer the postal code filter (blacklist or whitelist postal codes).',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('commerce_postal_code_filter_configure'),
+    'type' => MENU_NORMAL_ITEM,
+    'access arguments' => array('configure postal code filter'),
+    'file' => 'commerce_postal_code_filter.admin.inc',
+  );
+
+  return $items;
+
+}
+
+/**
+ * Implements hook_permission().
+ */
+function commerce_postal_code_filter_permission() {
+  return array(
+    'configure postal code filter' => array(
+      'title' => t('Configure postal code filter'),
+      'description' => t('Edit the list of postal codes on the blacklist or whitelist.'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_block_info().
+ */
+function commerce_postal_code_filter_block_info() {
+
+  $blocks = array();
+
+  $blocks['delivery-check'] = array(
+    'info' => t('Commerce Postal Code Filter - Delivery check'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+
+  return $blocks;
+
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function commerce_postal_code_filter_block_view($delta = '') {
+
+  return array(
+    'subject' => t('Do we deliver to your area?'),
+    'content' => array(
+      'description' => array(
+        '#markup' => '<p>' . t('Enter your postal code below and check to see if we deliver to your area.') . '</p>',
+      ),
+      'delivery-check-form' => drupal_get_form('commerce_postal_code_filter_delivery_check'),
+    ),
+  );
+
+}
+
+/**
+ * Form callback for delivery check block.
+ */
+function commerce_postal_code_filter_delivery_check($form, &$form_state) {
+
+  // Necessary for country_get_list().
+  require_once DRUPAL_ROOT . '/includes/locale.inc';
+  $countries = country_get_list();
+
+  $config = variable_get('commerce_postal_code_filter_config', array());
+
+  if (empty($config['countries'])) {
+    $form['country'] = array(
+      '#type' => 'hidden',
+      '#default_value' => NULL,
+    );
+  }
+  elseif (count($config['countries']) > 1) {
+    $form['country'] = array(
+      '#type' => 'select',
+      '#title' => t('Country'),
+      '#options' => $countries,
+    );
+  }
+  else {
+    $form['country'] = array(
+      '#type' => 'hidden',
+      '#default_value' => reset($config['countries']),
+    );
+  }
+
+  $form['postal_code'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Postal code'),
+    '#size' => 15,
+    '#required' => TRUE,
+  );
+
+  $form['postal_code_validity'] = array(
+    '#prefix' => '<div id="postal-code-validity">',
+    '#suffix' => '</div>',
+  );
+
+  if (!empty($form_state['values']['postal_code'])) {
+    if (_commerce_postal_code_filter_postal_code_is_valid($form_state['values']['postal_code'], $form_state['values']['country'])) {
+      $form['postal_code_validity']['#markup'] = '<p class="commerce-postcode-filter-valid">' . t('Good news! We can deliver to this postal code.') . '</p>';
+    }
+    else {
+      $form['postal_code_validity']['#markup'] = '<p class="commerce-postcode-filter-invalid">' . t('Sorry, We do not deliver to this postal code.') . '</p>';
+    }
+  }
+
+  $form['check'] = array(
+    '#type' => 'button',
+    '#value' => t('Check postal code'),
+    '#ajax' => array(
+      'callback' => 'commerce_postal_code_filter_delivery_check_ajax_callback',
+      'wrapper' => 'postal-code-validity',
+      'method' => 'replace',
+      'effect' => 'fade',
+    ),
+  );
+
+  return $form;
+
+}
+
+/**
+ * Ajax callback for delivery check form.
+ */
+function commerce_postal_code_filter_delivery_check_ajax_callback($form, $form_state) {
+  return $form['postal_code_validity'];
+}
+
+/**
+ * Main postcode validation function.
+ *
+ * Used by checkout validation process and by delivery checking block.
+ * It is abstracted enough that it could be used elsewhere if necessary.
+ * This function will either whitelist or blacklist postcodes based on the
+ * value of "commerce_postal_code_filter_mode" variable ('whitelist' or
+ * 'blacklist') for the given country.
+ *
+ * @param string $postal_code
+ *   Postal code to validate.
+ *
+ * @param string $country_code
+ *   Two character ISO 3166-1 country code.
+ *
+ * @return bool
+ *   Whether the postal code is valid or not.
+ */
+function _commerce_postal_code_filter_postal_code_is_valid($postal_code, $country_code) {
+
+  $config = variable_get('commerce_postal_code_filter_config', array());
+
+  // If filtering isn't on for the specified country, it's automatically valid.
+  if (!isset($config['countries'][$country_code])) {
+    return TRUE;
+  }
+
+  // Convert the postal code to uppercase.
+  $postal_code = drupal_strtoupper($postal_code);
+
+  // And strip any whitespace from it.
+  $postal_code = preg_replace('/\s+/', '', $postal_code);
+
+  // Fetch postal_codes from variable.
+  $postal_codes = explode(',', empty($config['country_filters'][$country_code]['postal_codes']) ? '' : $config['country_filters'][$country_code]['postal_codes']);
+
+  // Regardless of the blacklist / whitelist mode, if the filter list doesn't
+  // contain any postal codes, then return TRUE, the postal code must be valid.
+  if (empty($postal_codes)) {
+    return TRUE;
+  }
+
+  $mode = empty($config['country_filters'][$country_code]['filter_mode']) ? 'blacklist' : $config['country_filters'][$country_code]['filter_mode'];
+
+  // Check the postal code against each postal code in our filter list.
+  // We are checking for partial matches, i.e. if the submitted postal code
+  // *begins with* the filtered item.
+  foreach ($postal_codes as $filtered_item) {
+    if (strpos($postal_code, $filtered_item) === 0) {
+
+      // We've found a match, if we're blacklisting, return FALSE.
+      // If we're whitelisting, return TRUE.
+      return ($mode == 'blacklist') ? FALSE : TRUE;
+    }
+  }
+
+  // No matches found.
+  // If we're blacklisting, return TRUE as the postcode was not blacklisted.
+  // If we're whitelisting, return FALSE as the postcode was not whitelisted.
+  return ($mode == 'blacklist') ? TRUE : FALSE;
+
+}
+
+/**
+ * Implements hook_commerce_checkout_pane_info_alter().
+ *
+ * Add a validation routine onto the shipping pane
+ */
+function commerce_postal_code_filter_commerce_checkout_pane_info_alter(&$checkout_panes) {
+
+  $checkout_panes['customer_profile_billing']['callbacks']['checkout_form_validate'] = '_commerce_postal_code_filter_validate_checkout_pane';
+
+  if (module_exists('commerce_shipping')) {
+    $checkout_panes['customer_profile_shipping']['callbacks']['checkout_form_validate'] = '_commerce_postal_code_filter_validate_checkout_pane';
+  }
+
+}
+
+/**
+ * Form validation callback for shipping & billing panes on the checkout form.
+ */
+function _commerce_postal_code_filter_validate_checkout_pane(&$form, &$form_state, $checkout_pane) {
+
+  $langcode = $form[$checkout_pane['pane_id']]['commerce_customer_address']['#language'];
+  $config = variable_get('commerce_postal_code_filter_config', array());
+
+  // Grab the country code from the form state.
+  $country_code = $form_state['values'][$checkout_pane['pane_id']]['commerce_customer_address'][$langcode][0]['country'];
+
+  // If the current country + pane combination isn't set to filter, return TRUE.
+  if (empty($config['country_filters'][$country_code]['filter_addresses'][$checkout_pane['pane_id']])) {
+    return TRUE;
+  }
+
+  // Grab the postal code from the form state.
+  $postal_code = $form_state['values'][$checkout_pane['pane_id']]['commerce_customer_address'][$langcode][0]['postal_code'];
+
+  if (_commerce_postal_code_filter_postal_code_is_valid($postal_code, $country_code)) {
+    return TRUE;
+  }
+  else {
+
+    form_set_error(
+      sprintf(
+        '%s][commerce_customer_address][%s][0][postal_code',
+        $checkout_pane['pane_id'],
+        $langcode
+      ),
+      t('We do not deliver to this postal code')
+    );
+
+    return FALSE;
+
+  }
+
+}

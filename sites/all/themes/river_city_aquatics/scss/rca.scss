@@ -1,0 +1,566 @@
+$gray01: #f3f3f3;
+$cta01: #E05E35;
+$cta02: #AFBD21;
+$dark-green: #073D1A;
+
+$tablet-width: 768px;
+$desktop-width: 1024px;
+
+@mixin tablet {
+  @media (min-width: #{$tablet-width}) and (max-width: #{$desktop-width - 1px}) {
+    @content;
+  }
+}
+@mixin tablet_up {
+  @media (min-width: #{$tablet-width}) {
+    @content;
+  }
+}
+@mixin desktop {
+  @media (min-width: #{$desktop-width}) {
+    @content;
+  }
+}
+
+body {
+  background: $gray01;
+  font-family: 'Oswald';
+  font-weight: 300;
+}
+p {
+  font-family: 'Oswald';
+  font-weight: 300;
+}
+h1, h2, h3 {
+  color: $cta01;
+  text-transform: uppercase;
+  font-family: 'Oswald';
+  font-weight: 300;
+}
+h2 {
+  font-size: 20px;
+  line-height: 18px;
+}
+h4 {
+  font-size: 20px;
+  font-weight: bold;
+}
+a:link, a:visited {
+    color: $cta01;
+    text-decoration: none;
+}
+
+#section-header {
+  background: #fff;
+}
+.section-footer {
+  background: #fff;
+  ul.menu {
+    text-transform: uppercase;
+    font-family: 'Oswald';
+    font-weight: 300;
+    li {
+      text-transform: uppercase;
+      font-family: 'Oswald';
+      font-weight: 300;
+      &.expanded {
+        span {
+          color: #000;
+          font-family: 'Oswald';
+          font-weight: 300;
+          font-size: 18px;
+        }
+        a {
+          color: #000;
+        }
+        ul.menu li a {
+          text-transform: uppercase;
+          font-family: 'Oswald';
+          font-weight: 300;
+        }
+      }
+    }
+  }
+}
+
+
+.block-menu-user-menu {
+  .content {
+    ul.menu {
+      li {
+        a {
+          text-transform: uppercase;
+          font-family: 'Oswald';
+          font-weight: 300;
+          color: $cta01;
+          &:hover {
+            color: #fff;
+            background-color: $cta01;
+          }
+        }
+        &.first {
+          border-right: 1px solid $cta01;
+        }
+      }
+    }
+  }
+}
+
+.block-shopping-cart-block {
+  .content {
+    .view-shopping-cart {
+      .line-item-summary {
+        .line-item-quantity {
+          color: $cta01;
+        }
+        ul.links {
+          text-transform: uppercase;
+          font-family: 'Oswald';
+          font-weight: 200;
+          background-color: $cta01;
+        }
+      }
+    }
+  }
+}
+
+.zone-footer-wrapper {
+  background: #fff;
+  color: #000;
+  a {
+    color: #000;
+  }
+}
+
+/* Logged in user */
+.zone-user-wrapper {
+  background: $gray01;
+}
+
+/* MAIN NAV */
+
+
+.navigation .primary-menu ul li.first a,
+.navigation .second-menu ul li.first a {
+  -moz-border-radius: 0 0 0 0 !important;
+  -webkit-border-radius: 0 0 0 0 !important;
+  -khtml-border-radius: 0 0 0 0 !important;
+  border-radius: 0 0 0 0 !important;
+}
+.navigation .primary-menu ul li.last a,
+.navigation .second-menu ul li.last a {
+  -moz-border-radius: 0 0 0 0 !important;
+  -webkit-border-radius: 0 0 0 0 !important;
+  -khtml-border-radius: 0 0 0 0 !important;
+  border-radius: 0 0 0 0 !important;
+}
+
+.navigation {
+  .primary-menu ul {
+    margin: 15px 0 !important;
+    li a {
+      font-family: 'Oswald';
+      font-weight: 300;
+      font-size: 18px;
+      padding: 10px 13px;
+      background-color: $cta02 !important;
+      color: #fff;
+      border: none !important;
+      text-transform: uppercase;
+      &.active {
+        background-color: $cta01 !important;
+        color: #fff !important;
+      }
+      &:hover {
+        background-color: $cta01 !important;
+        color: #fff !important;
+      }
+    }
+  }
+  .second-menu ul {
+    margin: 15px 0 !important;
+      li a {
+      font-family: 'Oswald';
+      font-weight: 300;
+      font-size: 18px;
+      padding: 10px 13px;
+      background-color: $dark-green !important;
+      color: #fff !important;
+      border: none !important;
+      text-transform: uppercase;
+      &.active {
+        background-color: $cta01 !important;
+        color: #fff !important;
+      }
+      &:hover {
+        background-color: $cta01 !important;
+        color: #ffffff !important;
+      }
+    }
+  }
+}
+#block-menu-menu-social-connection {
+  h2 {
+    font-family: 'Oswald';
+    font-weight: 400;
+  }
+  .content ul.menu li {
+    margin-bottom: 0;
+    background: none;
+    span, a {
+      font-family: 'Oswald';
+      font-weight: 300;
+      color: #000;
+      text-transform: uppercase;
+      background: none !important;
+      padding: 4px 0;
+      height: auto;
+      &:hover {
+        background: none !important;
+      }
+    }
+  }
+}
+
+#promotional_banner {
+  background-color: $cta01;
+  color: #FFFFFF;
+  font-family: 'Oswald';
+  letter-spacing: 2px;
+  font-size: 18px;
+  padding: 5px 10px 20px 10px;
+  position: relative;
+  top: 0;
+  text-align: center;
+  @include tablet {
+    font-size: 24px;
+  }
+  @include desktop {
+    font-size: 30px;
+  }
+}
+
+
+.block-block-3 {
+  #shipping {
+    background-color: #000000;
+    border: 6px solid #ffffff;
+    color: #fff;
+    display: block;
+    font-size: 14px;
+    text-align: center;
+  }
+  @include tablet_up {
+    position: absolute;
+    left: -50px;
+    top: 85px;
+    z-index: 100;
+    #shipping {
+      border-color: #FFF;
+      -moz-border-radius: 80px;
+      -webkit-border-radius: 80px;
+      -khtml-border-radius: 80px;
+      border-radius: 80px;
+      height: 120px;
+      //line-height: 24px;
+      padding: 10px 5px;
+      margin-top: 0;
+      width: 130px;
+
+      #shipping_currency {
+        display: block;
+        font-size: 27px;
+        margin-top: 2px;
+      }
+
+
+      #shipping_message {
+        //font-family: "Open Sans", sans-serif;
+        line-height: 10px;
+        font-weight: 500;
+        span {
+          //border-bottom: 1px solid #ffffff;
+          display: block;
+          color: white;
+          font-size: 18px;
+          padding: 10px 0 4px 0;
+          text-transform: uppercase;
+          line-height: 24px;
+        }
+      }
+    }
+  }
+}
+
+.block-shipping-discount #shipping #shipping_currency {
+    display: block;
+    font-size: 27px;
+    margin-top: 2px;
+}
+.block-shipping-discount #shipping #shipping_message {
+    font-family: "Open Sans", sans-serif;
+    font-weight: 400;
+}
+
+.breadcrumb {
+  background: none;
+  border: none;
+  color: $cta01;
+  margin: 20px 0;
+  padding: 13px 27px;
+  text-transform: uppercase;
+  a {
+    color: $cta01;
+  }
+}
+
+/*  Collection Pages */
+.view-collection-products .view-content .item-list .products-per-collection li header,
+.view-collection-taxonomy-term .view-content .item-list .products-per-collection li header {
+    background: none;
+    padding-top: 20px;
+}
+.view-collection-products .view-content .item-list .products-per-collection li header h2 a,
+.view-collection-taxonomy-term .view-content .item-list .products-per-collection li header h2 a {
+    color: $cta01;
+    font-size: 14px;
+    text-decoration: none;
+    text-transform: uppercase;
+}
+
+.view-collection-products {
+  .views-row {
+    text-align: center;
+  }
+}
+
+.view-collection-products .view-header .taxonomy-title,
+.view-collection-taxonomy-term .view-header .taxonomy-title {
+  text-transform: uppercase;
+  font-family: 'Oswald';
+  font-weight: 300;
+}
+
+/* ADD TO CART */
+.node-product-type .field-type-commerce-product-reference {
+  background: none;
+  form.commerce-add-to-cart {
+    background: none;
+    label {
+      text-transform: uppercase;
+      font-family: 'Oswald';
+      font-weight: 300;
+    }
+    .form-submit {
+      background-color: $cta01;
+      background-image: none;
+      border: 0;
+      -moz-border-radius: 0;
+      -webkit-border-radius: 0;
+      -khtml-border-radius: 0;
+      border-radius: 0;
+      color: #ffffff;
+      font-family: 'Oswald';
+      font-size: 17px;
+      font-weight: 400;
+      margin-top: 40px;
+      margin-left: 5px;
+      padding: 5px 10px 5px 10px;
+    }
+  }
+}
+
+/* Checkout / PayPal */
+.page-cart #commerce-paypal-ec-order-form {
+  display: none;
+}
+.page-checkout #edit-commerce-payment {
+  display: none;
+}
+
+
+/* PRODUCT LISTING */
+.view-collection-taxonomy-term .view-content .item-list .products-per-collection li.views-row {
+  padding-bottom: 0;
+}
+
+
+#block-views-demo-content-slideshow-block-1 .views-field-nothing span.field-content,
+#block-views-demo-content-slideshow-block-1 .bx-prev span.field-content,
+#block-views-demo-content-slideshow-block-1 .bx-next span.field-content,
+#block-views-demo-content-slideshow-block-1 .views-field-nothing span.field-content em,
+#block-views-demo-content-slideshow-block-1 .bx-prev span.field-content em,
+#block-views-demo-content-slideshow-block-1 .bx-next span.field-content em {
+  font-family: 'Oswald' !important;
+  font-weight: 300;
+}
+
+/* OLD START */
+
+.view-gallery {
+  h3 {
+    text-align: left;
+    margin-bottom: 0;
+  }
+  //text-align: center;
+  .views-row {
+    display: inline-block;
+    padding: 10px 15px 40px 15px;
+  }
+  .views-field-title {
+    text-align: left;
+  }
+}
+
+.page-user {
+  .view-gallery {
+    .views-row {
+      display: inline-block;
+      padding: 10px 5px 40px;
+    }
+  }
+}
+
+
+
+.block-views-users-crew-block {
+  h2.block-title {
+    border-bottom: 1px solid #e8e8e8;
+    padding-bottom: 5px;
+    margin-bottom: 20px;
+  }
+}
+.view-users-crew {
+  .views-row {
+    margin-bottom: 40px;
+  }
+  .field-name-field-headshot {
+    float: left;
+    padding: 20px;
+  }
+  .views-field-name {
+    margin-bottom: 10px;
+    font-size: 18px;
+  }
+  .field-name-field-bio p {
+    margin-bottom: 7px;
+  }
+}
+
+/* User Panel */
+
+.page-user {
+  .container-24 {
+    .grid-18 {
+      width: 655px;
+      padding-right: 20px;
+      border-right: 1px solid #ccc;
+    }
+    .grid-6 {
+      h2.pane-title {
+        font-size: 17px;
+        font-weight: bold;
+        line-height: 20px;
+      }
+      a.views-more-link {
+        display: block;
+        text-align: right;
+        font-size: 12px;
+      }
+    }
+  }
+  .pane-user-field-headshot {
+    float: left;
+    padding: 20px;
+  }
+  .pane-views-gallery-block-1 {
+    h2.pane-title {
+      width: 90%;
+      @extend h4;
+      border-top: 1px solid #ccc;
+      padding-top: 20px;
+    }
+  }
+}
+
+/* Coral Categories */
+/*
+.page-taxonomy-term {
+  &.page-taxonomy-term-91 {
+    .pane-views-livestock-collections-block-1 {
+      text-align: center;
+      .views-row {
+        display: inline-block;
+        padding: 0 10px 10px 10px;
+        margin: 10px;
+        border: 1px solid #d7d7d7;
+        border-radius: 4px;
+        .views-field-name a {
+          display: block;
+          font-size: 18px;
+          padding-bottom: 4px;
+          margin: 10px 0 0 0;
+          background-color: #eeeeee;
+          border: 1px solid #d7d7d7;
+        }
+      }
+    }
+  }
+}
+*/
+
+/* Prod Listing */
+.view-livestock-product-displays, .view-livestock-product-displays-cichlids {
+  .views-row {
+    display: inline-block;
+    padding: 10px;
+    margin: 10px;
+    border: 1px solid #d7d7d7;
+    border-radius: 4px;
+    h2 {
+      font-size: 18px;
+      margin-bottom: 8px;
+      max-width: 250px;
+      min-height: 60px;
+    }
+    .field-name-commerce-price {
+      font-size: 18px;
+      margin: 0;
+    }
+  }
+}
+
+/* PANELS */
+.panel-panel .inside {
+  padding: 0 20px;
+}
+
+/* OLD END?? */
+
+
+/* Commerce OVerrides */
+body.toolbar #toolbar-home a span {
+    background: url("../library/images/deliish-logo-sm.png") no-repeat scroll 0 0 transparent;
+    display: block;
+    margin: 0;
+    min-height: 40px;
+    text-indent: -9999px;
+    //width: 130px;
+}
+
+/* homepage Slidshow */
+.front #block-views-demo-content-slideshow-block-1 .event-slider .views-field-nothing {
+  background: transparent url("../library/images/bg_title_slideshow_current.png") left top no-repeat;
+}
+
+.front #block-views-demo-content-slideshow-block-1 .views-field-nothing span.field-content em,
+.front #block-views-demo-content-slideshow-block-1 .bx-prev span.field-content em,
+.front #block-views-demo-content-slideshow-block-1 .bx-next span.field-content em {
+  font-size: 28px !important;
+}
+
+/* Homepage CTAs */
+#zone-postscript .view-ad-push .views-row .views-field-field-tagline .field-content,
+#zone-postscript .block-blog-block .views-field-title .field-content {
+  display: none;
+}

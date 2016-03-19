@@ -1,0 +1,14 @@
+/**
+ * Styles for delivery checking block
+ */
+#commerce-postal-code-filter-delivery-check select {
+  max-width: 100%;
+}
+
+.commerce-postcode-filter-valid {
+  color: #009900;
+}
+
+.commerce-postcode-filter-invalid {
+  color: #f00;
+}

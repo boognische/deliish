@@ -1,0 +1,49 @@
+<?php
+
+/**
+ * @file
+ * Install file for Commerce postal code filter.
+ */
+
+/**
+ * Implements hook_uninstall().
+ */
+function commerce_postal_code_filter_uninstall() {
+  variable_del('commerce_postal_code_filter_config');
+}
+
+/**
+ * Remove custom strings from the configuration variable.
+ */
+function commerce_postal_code_filter_update_7001() {
+  $config = variable_get('commerce_postal_code_filter_config', array());
+
+  unset($config['delivery_block']);
+
+  foreach ($config['country_filters'] as &$country_filter) {
+    if (is_array($country_filter)) {
+      unset($country_filter['filter_message']);
+    }
+  }
+
+  variable_set('commerce_postal_code_filter_config', $config);
+
+  return t('Removed custom strings from configuration.');
+}
+
+/**
+ * Trim trailing commas from the postcode lists
+ */
+function commerce_postal_code_filter_update_7002() {
+  $config = variable_get('commerce_postal_code_filter_config', array());
+
+  foreach ($config['country_filters'] as &$country_filter) {
+    if (is_array($country_filter)) {
+      $country_filter['postal_codes'] = trim($country_filter['postal_codes'], ',');
+    }
+  }
+
+  variable_set('commerce_postal_code_filter_config', $config);
+
+  return t('Trimmed trailing commas from the postcode lists');
+}

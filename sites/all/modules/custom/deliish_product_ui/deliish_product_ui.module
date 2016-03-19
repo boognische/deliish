@@ -1,0 +1,18 @@
+<?php
+
+/**
+ * Implements hook_form_alter().
+ */
+function deliish_product_ui_form_alter(&$form, &$form_state, $form_id) {
+  if (strstr($form_id, 'commerce_cart_add_to_cart_form')) {
+
+    // Rename add-to-cart form fields label (quantity).
+    $form['quantity']['#title'] = t('Quantity');
+  }
+}
+
+
+function deliish_product_ui_commerce_checkout_pane_info_alter(&$checkout_pane) {
+  //$checkout_pane['commerce_payment']['title'] = t('Payment method');
+  $checkout_pane['customer_profile_shipping']['title'] = t('Delivery Information');
+}
